@@ -1,2 +1,4 @@
 # Mini-Project
-GAFFAFAFOFOFOFOFOFO
+public static void main() {
+	// code
+}
