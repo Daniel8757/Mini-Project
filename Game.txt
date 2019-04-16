@@ -8,45 +8,44 @@ import java.awt.geom.*;
 
 Developed by: Kevin Bui, Daniel Li, Sebastian Kamal
 Date of creation: 4/16/19
-Last edited on: 4/16/19 By Sebastian
-
-Update Log:
-
-4/16/19:
-- Created a frame with a 2d canvas
-- Animated ball moves (repaints ball every 5 ms to create the movement when x & y positions are modified)
-- Created a kind of working boundary
-	- Bug: You can bypass the boundary of the border whilst holding down the direction in which you are moving, simply tapping the key will in fact deny you. Need to add a KEYDOWN listener so while the key is down it denies them, should fix the issue.
+Last edited on:
 
 */
 
 public class Game extends JPanel implements ActionListener, KeyListener {
 
+    /* Creates a refresher (the actionlistener in the class ^^ is updating every 5ms) */
     Timer t = new Timer(5, this);
+    /* x and y are current points, the vel points are to be added to the x & y to redraw the ball every 5ms which is basically how the movement is done */
     double x = 0, y = 0, velx = 0, vely = 0;
     
     public Game() {
+        /* Starts the timer */
         t.start();
+        /* Setting properties */
         addKeyListener(this);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false);
     }
     
+    /* Creating the 2d graphics renderer */
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         g2.fill(new Ellipse2D.Double(x, y, 40, 40));
     }
     
+    /* Everytime ANYTHING happens (ie. a keypress), it's changing the x & y coords and repainting the canvas with the new ball */
     public void actionPerformed(ActionEvent e) {
         repaint();
         x += velx;
         y += vely;
     }
     
+    /* Directional movement handlers */
     public void up() {
         if (y >= 10) {
-            vely = -1.5;
+            vely = -4.5;
             velx = 0;
             System.out.println("X: " + x + ", Y: " + y);
         }
@@ -54,7 +53,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     
     public void down() {
         if (y <= 500) {
-            vely = 1.5;
+            vely = 4.5;
             velx = 0;
             System.out.println("X: " + x + ", Y: " + y);
         }
@@ -63,7 +62,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     public void left() {
         if (x >= 0) {
             vely = 0;
-            velx = -1.5;
+            velx = -4.5;
             System.out.println("X: " + x + ", Y: " + y);
         }
     }
@@ -71,11 +70,12 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     public void right() {
         if (x <= 609) {
             vely = 0;
-            velx = 1.5;
+            velx = 4.5;
             System.out.println("X: " + x + ", Y: " + y);
         }
     }
     
+    /* Key press handling starts here */
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
         if (code == KeyEvent.VK_UP) {
@@ -126,6 +126,6 @@ public class Game extends JPanel implements ActionListener, KeyListener {
             velx = 0;
         }
     }
-    
+     
+    /* End of program */
 }
-
