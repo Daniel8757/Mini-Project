@@ -13,10 +13,7 @@ Last edited on: 4/16/19
 Update Log:
 
 4/16/19:
-- Created a frame and a canvas to draw on
-- Created a moving ball
-- Created somewhat of a boundary system (the window)
-    - Bug: If you are far from a boundary and hold a button to head towards it, you can pass it because there is no KEYDOWN listener only a KEYPRESS so tapping it will present you with a locked motion.
+- Fixed the barrier bug. The ball is now in the confined space of the window!
 
 */
 
