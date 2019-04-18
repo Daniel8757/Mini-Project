@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 
-// git pull
 /*
 
 Developed by: Kevin Bui, Daniel Li, Sebastian Kamal
