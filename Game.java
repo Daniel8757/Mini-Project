@@ -4,8 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 
-// This is gonna work LOL
-
+// TGOOGOOFOFOFO
 /*
 
 Developed by: Kevin Bui, Daniel Li, Sebastian Kamal
