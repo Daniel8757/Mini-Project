@@ -5,7 +5,6 @@ import java.awt.event.*;
 import java.awt.geom.*;
 
 // Oofo!GFYGDFDGFYGYDSF AGAGGFGAGGA
-/*
 
 Developed by: Kevin Bui, Daniel Li, Sebastian Kamal
 Date of creation: 4/16/19
