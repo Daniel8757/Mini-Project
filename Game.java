@@ -4,8 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 
-// Oofo!!!! :D
-
+// Oofo!GFYGDFDGFYGYDSF AGAGGFGAGGA
 /*
 
 Developed by: Kevin Bui, Daniel Li, Sebastian Kamal
