@@ -37,12 +37,13 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        g2.fill(new Ellipse2D.Double(x, y, 40, 40));
+        g2.setColor(new Color(255,0,0));
+        g2.fill(new Ellipse2D.Double(x, y, 25, 25));
     }
     
     /* Everytime ANYTHING happens (ie. a keypress), it's changing the x & y coords and repainting the canvas with the new ball */
     public void actionPerformed(ActionEvent e) {
-        if ((x + velx >= 0 && x + velx <= 746) && (y + vely >= 0 && y + vely <= 522)) {
+        if ((x + velx >= 0 && x + velx <= 761) && (y + vely >= -1 && y + vely <= 536)) {
             repaint();
             x += velx;
             y += vely;
@@ -62,12 +63,10 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     }
     
     public void left() {
-        vely = 0;
         velx = -4.5;
     }
     
     public void right() {
-        vely = 0;
         velx = 4.5;
     }
     
@@ -86,12 +85,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         if (code == KeyEvent.VK_RIGHT) {
             right();
         }
-        System.out.println("X: " + x + ", Y: " + y);
-    }
-
-    @Override
-    public void keyTyped(KeyEvent ke) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // Logs x and y System.out.println("X: " + x + ", Y: " + y);
     }
     
     @Override
@@ -111,13 +105,21 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         }
     }
     
+    @Override
+    public void keyTyped(KeyEvent ke) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     public static void main(String [] args) {
-        JFrame f = new JFrame();
-        JButton devMode = new JButton("DevMode");
+        
+        JButton devMode = new JButton("Dev");
+        
         Game game = new Game();
+        
+        JFrame f = new JFrame();
         f.setTitle("Game");
         f.add(game);
-        f.add(devMode);
+        // f.add(devMode); // This is blured because it keeps filling the entire screen
         f.setVisible(true);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(800, 600);
