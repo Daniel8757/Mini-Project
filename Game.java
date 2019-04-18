@@ -13,7 +13,8 @@ Last edited on: 4/16/19
 Update Log:
 
 4/16/19:
-- Fixed the barrier bug. The ball is now in the confined space of the window!
+- Fixed solid borders. 100% working!
+- Changed to pacman borders. Can change to solid borders at will.
 
 */
 
@@ -43,6 +44,12 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     
     /* Everytime ANYTHING happens (ie. a keypress), it's changing the x & y coords and repainting the canvas with the new ball */
     public void actionPerformed(ActionEvent e) {
+        repaint();
+        x += velx;
+        y += vely;
+        
+        /*
+        Solid borders
         if ((x + velx >= 0 && x + velx <= 761) && (y + vely >= -1 && y + vely <= 536)) {
             repaint();
             x += velx;
@@ -50,6 +57,21 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         } else {
             velx = 0;
             vely = 0;
+        }
+        */
+        
+        // Pacman borders
+        if ((x + velx >= 830)) {
+            x = 0;
+        }
+        if ((x + velx <= -68)) {
+            x = 761;
+        }
+        if ((y + vely >= 605)) {
+            y = 0;
+        }
+        if ((y + vely <= -68)) {
+            y = 537;
         }
     }
     
@@ -85,7 +107,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         if (code == KeyEvent.VK_RIGHT) {
             right();
         }
-        // Logs x and y System.out.println("X: " + x + ", Y: " + y);
+        System.out.println("X: " + x + ", Y: " + y);
     }
     
     @Override
@@ -107,7 +129,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     
     @Override
     public void keyTyped(KeyEvent ke) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("Key is not yet implimented in the game!");
     }
     
     public static void main(String [] args) {
@@ -121,6 +143,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         f.add(game);
         // f.add(devMode); // This is blured because it keeps filling the entire screen
         f.setVisible(true);
+        f.setResizable(false);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(800, 600);
     }
