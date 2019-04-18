@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 
-// Doni is bear
+// DONI IS GOD NOT BEAR LOLOLLOLOL
 
 /*
 
