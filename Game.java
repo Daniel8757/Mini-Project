@@ -62,16 +62,16 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         
         // Pacman borders
         if ((x + velx >= 830)) {
-            x = 0;
+            x = -35;
         }
         if ((x + velx <= -68)) {
-            x = 761;
+            x = 830;
         }
         if ((y + vely >= 605)) {
-            y = 0;
+            y = -35;
         }
         if ((y + vely <= -68)) {
-            y = 537;
+            y = 600;
         }
     }
     
@@ -107,7 +107,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         if (code == KeyEvent.VK_RIGHT) {
             right();
         }
-        System.out.println("X: " + x + ", Y: " + y);
+        // System.out.println("X: " + x + ", Y: " + y);
     }
     
     @Override
