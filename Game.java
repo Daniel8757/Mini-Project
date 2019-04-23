@@ -13,8 +13,12 @@ Last edited on: 4/16/19
 Update Log:
 
 4/16/19:
-- Fixed solid borders. 100% working!
-- Added optional pacman styled borders
+- Fixed solid borders. 100% working! (Seb)
+- Added optional pacman styled borders (Seb)
+
+4/23/19:
+- Individual colours for objects
+- Fixed border movement.
 
 */
 
