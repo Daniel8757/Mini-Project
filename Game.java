@@ -38,8 +38,9 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(new Color(0,0,255));
+        g2.setColor(new Color(0,0,255)); // Ball colour
         g2.fill(new Ellipse2D.Double(x, y, 25, 25)); // Ball
+        g2.setColor(new Color(0,0,0)); // Status bar colour
         g2.fill(new Rectangle2D.Double(0, 521, 800, 50)); // Status bar
     }
     
