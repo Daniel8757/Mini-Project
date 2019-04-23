@@ -14,7 +14,7 @@ Update Log:
 
 4/16/19:
 - Fixed solid borders. 100% working!
-- Changed to pacman borders. Can change to solid borders at will.
+- Added optional pacman styled borders
 
 */
 
