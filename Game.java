@@ -38,7 +38,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(new Color(255,0,0));
+        g2.setColor(new Color(0,0,255));
         g2.fill(new Ellipse2D.Double(x, y, 25, 25));
     }
     
@@ -48,8 +48,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         x += velx;
         y += vely;
         
-        /*
-        Solid borders
+        // Solid borders
         if ((x + velx >= 0 && x + velx <= 761) && (y + vely >= -1 && y + vely <= 536)) {
             repaint();
             x += velx;
@@ -58,9 +57,8 @@ public class Game extends JPanel implements ActionListener, KeyListener {
             velx = 0;
             vely = 0;
         }
-        */
         
-        // Pacman borders
+        /* Pacman borders (Unlikely to use but cool!)
         if ((x + velx >= 830)) {
             x = -35;
         }
@@ -73,6 +71,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         if ((y + vely <= -68)) {
             y = 600;
         }
+        */
     }
     
     /* Directional movement handlers */
