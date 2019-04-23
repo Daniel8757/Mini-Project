@@ -39,20 +39,16 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(new Color(0,0,255));
-        g2.fill(new Ellipse2D.Double(x, y, 25, 25));
+        g2.fill(new Ellipse2D.Double(x, y, 25, 25)); // Ball
+        g2.fill(new Rectangle2D.Double(0, 521, 800, 50)); // Status bar
     }
     
     /* Everytime ANYTHING happens (ie. a keypress), it's changing the x & y coords and repainting the canvas with the new ball */
     public void actionPerformed(ActionEvent e) {
-        repaint();
-        x += velx;
-        y += vely;
         
         // Solid borders
         if ((x + velx >= 0 && x + velx <= 761) && (y + vely >= -1 && y + vely <= 536)) {
-            repaint();
-            x += velx;
-            y += vely;
+            // Allows movement
         } else {
             velx = 0;
             vely = 0;
@@ -72,6 +68,11 @@ public class Game extends JPanel implements ActionListener, KeyListener {
             y = 600;
         }
         */
+        
+        repaint();
+        x += velx;
+        y += vely;
+        
     }
     
     /* Directional movement handlers */
