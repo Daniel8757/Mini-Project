@@ -17,8 +17,8 @@ Update Log:
 - Added optional pacman styled borders (Seb)
 
 4/23/19:
-- Individual colours for objects
-- Fixed border movement.
+- Individual colours for objects (Seb)
+- Fixed border movement. (Seb)
 
 */
 
