@@ -28,10 +28,11 @@ Update Log:
 
 public class Game extends JPanel implements ActionListener, KeyListener {
     
+    // Jumping condition (If in air, jumpin isn't allowed. THE BALL IS NOT A JEDI! :D)
     public static boolean canJump = false;
     /* Creates a refresher (the actionlistener in the class ^^ is updating every 5ms) */
     Timer t = new Timer(5, this);
-    /* x and y are current points, the vel points are to be added to the x & y to redraw the ball every 5ms which is basically how the movement is done */
+    /* x and y are current points, the vel points are to be added to the x & y to redraw the ball every 5ms which is how the movement is done! */
     double x = 360, y = 498, velx = 0, vely = 0;
     
     public Game() {
@@ -49,8 +50,8 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(new Color(244,185,66)); // Ball colour
         g2.fill(new Ellipse2D.Double(x, y, 25, 25)); // Ball
-        g2.setColor(new Color(0,0,0)); // Status bar colour
-        g2.fill(new Rectangle2D.Double(0, 523, 795, 50)); // Status bar
+        g2.setColor(new Color(0,0,0)); // Platform colour
+        g2.fill(new Rectangle2D.Double(0, 523, 795, 50)); // Platform
     }
     
     /* Everytime ANYTHING happens (ie. a keypress), it's changing the x & y coords and repainting the canvas with the new ball */
@@ -70,12 +71,16 @@ public class Game extends JPanel implements ActionListener, KeyListener {
             vely = 0;
         }
         
+        // Painting the ball
         x += velx;
         y += vely;
+        // If the ball is less than the height of the ground it will paint it back down (gravity!)
         if (y < 498) {
             y += 10;
+            // Disables jumping while in air
             canJump = false;
         } else {
+            // Means the ball has landed because it has reached the ground coords and is able to jump!
             canJump = true;
         }
         repaint();
