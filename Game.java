@@ -3,6 +3,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
 
@@ -24,13 +26,14 @@ Update Log:
 4/24/19:
 - Added gravity! The ball will always fall back down! (Seb)
 - Added jumping! (Non parabolic)(Seb)
+- Fixed the gravity and jumping. (Seb)
 
 */
 
 public class Game extends JPanel implements ActionListener, KeyListener {
     
-    // Jumping condition (If in air, jumpin isn't allowed. THE BALL IS NOT A JEDI! :D)
-    public static boolean canJump = false;
+    // Jumping condition (If in air, jumping isn't allowed. THE BALL IS NOT A JEDI! :D)
+    public static boolean canJump = true;
     /* Creates a refresher (the actionlistener in the class ^^ is updating every 5ms) */
     Timer t = new Timer(5, this);
     /* x and y are current points, the vel points are to be added to the x & y to redraw the ball every 5ms which is how the movement is done! */
@@ -55,7 +58,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         g2.fill(new Rectangle2D.Double(0, 523, 795, 50)); // Platform
     }
     
-    /* Everytime ANYTHING happens (ie. a keypress), it's changing the x & y coords and repainting the canvas with the new ball */
+    /* Everytime ANYTHING happens (ie. a keypress), it's changing the x & y coords and repainting the canvas with the updated coordinates */
     public void actionPerformed(ActionEvent e) {
         
         // X Borders
@@ -66,7 +69,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         }
         
         // Y Borders
-        if (y + vely <= 498 && y + vely >= 350) {
+        if (y + vely <= 498 && y >= 350) {
             // Allows movement
         } else {
             vely = 0;
@@ -75,14 +78,19 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         // Painting the ball
         x += velx;
         y += vely;
-        // If the ball is less than the height of the ground it will paint it back down (gravity!)
+        
+        // Gravity for the ball
         if (y < 498) {
-            y += 10;
+            y += 4;
             // Disables jumping while in air
             canJump = false;
         } else {
             // Means the ball has landed because it has reached the ground coords and is able to jump!
             canJump = true;
+            // The gravity tends to pull the ball past because of it's number setup with the ground so this fixes that.
+            if (y > 498) {
+                y = 498;
+            }
         }
         repaint();
         
@@ -93,17 +101,19 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         int code = e.getKeyCode();
         if (code == KeyEvent.VK_UP) {
            if (canJump) {
-               vely = -20;
+               vely = -10;
            }
         }
         if (code == KeyEvent.VK_LEFT) {
-            velx = -5.5;
+            velx = -4.5;
         }
         if (code == KeyEvent.VK_RIGHT) {
-            velx = 5.5;
+            velx = 4.5;
         }
+        // System.out.println("X: " + x + ", Y: " + y); // Displays X and Y coords
     }
     
+    // Stops movement if a key is released
     @Override
     public void keyReleased(KeyEvent e) {
         int code = e.getKeyCode();
@@ -134,6 +144,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         f.setResizable(false);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(800, 600);
+        
     }
      
 }
