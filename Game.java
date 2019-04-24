@@ -51,7 +51,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(new Color(244,185,66)); // Ball colour
         g2.fill(new Ellipse2D.Double(x, y, 25, 25)); // Ball
-        g2.setColor(new Color(0,0,0)); // Platform colour
+        g2.setColor(new Color(28,147,1)); // Platform colour
         g2.fill(new Rectangle2D.Double(0, 523, 795, 50)); // Platform
     }
     
