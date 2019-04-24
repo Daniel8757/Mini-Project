@@ -22,6 +22,7 @@ Update Log:
 - Removed pacman borders. They were uneeded (Seb).
 
 4/24/19:
+- Added gravity! The ball will always fall back down! (Seb)
 - Added jumping! (Non parabolic)(Seb)
 
 */
