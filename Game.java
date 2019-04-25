@@ -28,18 +28,23 @@ Update Log:
 - Added jumping! (Non parabolic)(Seb)
 - Fixed the gravity and jumping. (Seb)
 
+4/25/19:
+- Added obstacles! They don't have collisions. (Seb)
+- Fixed the gravity and the jumping. (Seb)
+
 */
 
 public class Game extends JPanel implements ActionListener, KeyListener {
     
     // Jumping condition (If in air, jumping isn't allowed. THE BALL IS NOT A JEDI! :D)
     public static boolean canJump = true;
+    public static boolean canMove = true;
     /* Creates a refresher (the actionlistener in the class ^^ is updating every 5ms) */
     Timer t = new Timer(5, this);
     /* x and y are current points, the vel points are to be added to the x & y to redraw the ball every 5ms which is how the movement is done! */
     double x = 360, y = 498, velx = 0, vely = 0; // Ball properties
-    double x1, y1 = 10, vel1 = 2;
-    double x2, y2 = 10, vel2 = 2;
+    double x1, y1 = 10, vel1 = 0;
+    double x2, y2 = 10, vel2 = 0;
     double x3, y3 = 10, vel3 = 0;
     double x4, y4 = 10, vel4 = 0;
     double x5, y5 = 10, vel5 = 0;
@@ -93,7 +98,11 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         
         // Gravity for the ball
         if (y < 498) {
-            y += 4;
+            if (canMove) {
+                y += 4;
+            } else {
+                y += 0;
+            }
             // Disables jumping while in air
             canJump = false;
         } else {
@@ -104,7 +113,6 @@ public class Game extends JPanel implements ActionListener, KeyListener {
                 y = 498;
             }
         }
-        repaint();
         
         // OBSTACLES
         // Ball 1
@@ -188,6 +196,10 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         if (y5 >= 498) {
             y5 = 10;
         }
+        
+        // Colissions!
+        repaint();
+        
     }
     
     // Creates controllable movement for the ball
@@ -199,10 +211,14 @@ public class Game extends JPanel implements ActionListener, KeyListener {
            }
         }
         if (code == KeyEvent.VK_LEFT) {
-            velx = -4.5;
+            if (canMove) {
+                velx = -4.5;
+            }
         }
         if (code == KeyEvent.VK_RIGHT) {
-            velx = 4.5;
+            if (canMove) {
+                velx = 4.5;
+            }
         }
         // System.out.println("X: " + x + ", Y: " + y); // Displays X and Y coords
     }
