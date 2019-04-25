@@ -81,7 +81,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         
         // Gravity for the ball
         if (y < 498) {
-            y += 4;
+            y += 7;
             // Disables jumping while in air
             canJump = false;
         } else {
@@ -101,7 +101,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         int code = e.getKeyCode();
         if (code == KeyEvent.VK_UP) {
            if (canJump) {
-               vely = -10;
+               vely = -13;
            }
         }
         if (code == KeyEvent.VK_LEFT) {
