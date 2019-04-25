@@ -37,7 +37,12 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     /* Creates a refresher (the actionlistener in the class ^^ is updating every 5ms) */
     Timer t = new Timer(5, this);
     /* x and y are current points, the vel points are to be added to the x & y to redraw the ball every 5ms which is how the movement is done! */
-    double x = 360, y = 498, velx = 0, vely = 0;
+    double x = 360, y = 498, velx = 0, vely = 0; // Ball properties
+    double x1, y1 = 10, vel1 = 2;
+    double x2, y2 = 10, vel2 = 2;
+    double x3, y3 = 10, vel3 = 0;
+    double x4, y4 = 10, vel4 = 0;
+    double x5, y5 = 10, vel5 = 0;
     
     public Game() {
         /* Starts the timer */
@@ -49,18 +54,25 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     }
     
     /* Creating the 2d graphics renderer */
-    public void paintComponent(Graphics g) {
+    public void paint(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(new Color(244,185,66)); // Ball colour
-        g2.fill(new Ellipse2D.Double(x, y, 25, 25)); // Ball
         g2.setColor(new Color(28,147,1)); // Platform colour
         g2.fill(new Rectangle2D.Double(0, 523, 795, 50)); // Platform
+        g2.setColor(new Color(244,185,66)); // Ball colour
+        g2.fill(new Ellipse2D.Double(x, y, 25, 25)); // Ball
+        g2.setColor(new Color(0,0,255)); // Obstacle colours
+        g2.fill(new Rectangle2D.Double(x1, y1, 25, 25)); // Obstacle 1
+        g2.fill(new Rectangle2D.Double(x2, y2, 25, 25)); // Obstacle 1
+        g2.fill(new Rectangle2D.Double(x3, y3, 25, 25)); // Obstacle 1
+        g2.fill(new Rectangle2D.Double(x4, y4, 25, 25)); // Obstacle 1
+        g2.fill(new Rectangle2D.Double(x5, y5, 25, 25)); // Obstacle 1
     }
     
     /* Everytime ANYTHING happens (ie. a keypress), it's changing the x & y coords and repainting the canvas with the updated coordinates */
     public void actionPerformed(ActionEvent e) {
         
+        // BALL
         // X Borders
         if ((x + velx >= 0 && x + velx <= 770)) {
             // Allows movement
@@ -81,7 +93,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         
         // Gravity for the ball
         if (y < 498) {
-            y += 7;
+            y += 4;
             // Disables jumping while in air
             canJump = false;
         } else {
@@ -94,6 +106,88 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         }
         repaint();
         
+        // OBSTACLES
+        // Ball 1
+        // Random starting value
+        if (y1 == 10) {
+            double randomX = (Math.random()*((760-5) + 1)) + 5;
+            double randomY = (Math.random()*((3-1) + 1)) + 1;
+            if (randomX >= 5 && randomX <= 760) {
+                x1 = randomX;
+            }
+            if (randomY >= 1 && randomY <= 3) {
+                vel1 = randomY;
+            }
+        }
+        y1 += vel1;
+        // RBringing the ball back up
+        if (y1 >= 498) {
+            y1 = 10;
+        }
+        
+        // Ball 2
+        if (y2 == 10) {
+            double randomX = (Math.random()*((760-5) + 1)) + 5;
+            double randomY = (Math.random()*((3-1) + 1)) + 1;
+            if (randomX >= 5 && randomX <= 760) {
+                x2 = randomX;
+            }
+            if (randomY >= 1 && randomY <= 3) {
+                vel2 = randomY;
+            }
+        }
+        y2 += vel2;
+        if (y2 >= 498) {
+            y2 = 10;
+        }
+        
+        // Ball 3
+        if (y3 == 10) {
+            double randomX = (Math.random()*((760-5) + 1)) + 5;
+            double randomY = (Math.random()*((3-1) + 1)) + 1;
+            if (randomX >= 5 && randomX <= 760) {
+                x3 = randomX;
+            }
+            if (randomY >= 1 && randomY <= 3) {
+                vel3 = randomY;
+            }
+        }
+        y3 += vel3;
+        if (y3 >= 498) {
+            y3 = 10;
+        }
+        
+        // Ball 4
+        if (y5 == 10) {
+            double randomX = (Math.random()*((760-5) + 1)) + 5;
+            double randomY = (Math.random()*((3-1) + 1)) + 1;
+            if (randomX >= 5 && randomX <= 760) {
+                x4 = randomX;
+            }
+            if (randomY >= 1 && randomY <= 3) {
+                vel4 = randomY;
+            }
+        }
+        y4 += vel4;
+        if (y4 >= 498) {
+            y4 = 10;
+        }
+        
+        // Ball 5
+        if (y5 == 10) {
+            double randomX = (Math.random()*((760-5) + 1)) + 5;
+            double randomY = (Math.random()*((3-1) + 1)) + 1;
+            if (randomX >= 5 && randomX <= 760) {
+                x5 = randomX;
+            }
+            if (randomY >= 1 && randomY <= 3) {
+                vel5 = randomY;
+            }
+        }
+        y5 += vel5;
+        if (y5 >= 498) {
+            y5 = 10;
+        }
     }
     
     // Creates controllable movement for the ball
@@ -101,7 +195,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         int code = e.getKeyCode();
         if (code == KeyEvent.VK_UP) {
            if (canJump) {
-               vely = -13;
+               vely = -9;
            }
         }
         if (code == KeyEvent.VK_LEFT) {
