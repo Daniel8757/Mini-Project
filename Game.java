@@ -31,6 +31,7 @@ Update Log:
 4/25/19:
 - Added obstacles! They don't have collisions. (Seb)
 - Fixed the gravity and the jumping. (Seb)
+- Improved obstacle difficulty. (Seb)
 
 */
 
@@ -119,16 +120,12 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         // Random starting value
         if (y1 == 10) {
             double randomX = (Math.random()*((760-5) + 1)) + 5;
-            double randomY = (Math.random()*((3-1) + 1)) + 1;
-            if (randomX >= 5 && randomX <= 760) {
-                x1 = randomX;
-            }
-            if (randomY >= 1 && randomY <= 3) {
-                vel1 = randomY;
-            }
+            double randomY = (Math.random()*((5-2) + 1)) + 4;
+            x1 = randomX;
+            vel1 = randomY;
         }
         y1 += vel1;
-        // RBringing the ball back up
+        // Bringing the ball back up
         if (y1 >= 498) {
             y1 = 10;
         }
@@ -136,13 +133,9 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         // Ball 2
         if (y2 == 10) {
             double randomX = (Math.random()*((760-5) + 1)) + 5;
-            double randomY = (Math.random()*((3-1) + 1)) + 1;
-            if (randomX >= 5 && randomX <= 760) {
-                x2 = randomX;
-            }
-            if (randomY >= 1 && randomY <= 3) {
-                vel2 = randomY;
-            }
+            double randomY = (Math.random()*((5-2) + 1)) + 2;
+            x2 = randomX;
+            vel2 = randomY;
         }
         y2 += vel2;
         if (y2 >= 498) {
@@ -152,13 +145,9 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         // Ball 3
         if (y3 == 10) {
             double randomX = (Math.random()*((760-5) + 1)) + 5;
-            double randomY = (Math.random()*((3-1) + 1)) + 1;
-            if (randomX >= 5 && randomX <= 760) {
-                x3 = randomX;
-            }
-            if (randomY >= 1 && randomY <= 3) {
-                vel3 = randomY;
-            }
+            double randomY = (Math.random()*((5-2) + 1)) + 2;
+            x3 = randomX;
+            vel3 = randomY;
         }
         y3 += vel3;
         if (y3 >= 498) {
@@ -168,13 +157,9 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         // Ball 4
         if (y5 == 10) {
             double randomX = (Math.random()*((760-5) + 1)) + 5;
-            double randomY = (Math.random()*((3-1) + 1)) + 1;
-            if (randomX >= 5 && randomX <= 760) {
-                x4 = randomX;
-            }
-            if (randomY >= 1 && randomY <= 3) {
-                vel4 = randomY;
-            }
+            double randomY = (Math.random()*((5-2) + 1)) + 2;
+            x4 = randomX;
+            vel4 = randomY;
         }
         y4 += vel4;
         if (y4 >= 498) {
@@ -184,13 +169,9 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         // Ball 5
         if (y5 == 10) {
             double randomX = (Math.random()*((760-5) + 1)) + 5;
-            double randomY = (Math.random()*((3-1) + 1)) + 1;
-            if (randomX >= 5 && randomX <= 760) {
-                x5 = randomX;
-            }
-            if (randomY >= 1 && randomY <= 3) {
-                vel5 = randomY;
-            }
+            double randomY = (Math.random()*((5-2) + 1)) + 2;
+            x5 = randomX;
+            vel5 = randomY;
         }
         y5 += vel5;
         if (y5 >= 498) {
