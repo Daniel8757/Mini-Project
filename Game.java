@@ -1,10 +1,9 @@
 package game;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.Rectangle;
 import java.awt.event.*;
 import java.awt.geom.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /*
 
@@ -33,52 +32,56 @@ Update Log:
 - Fixed the gravity and the jumping. (Seb)
 - Improved obstacle difficulty. (Seb)
 
+4/26/19:
+- Added collisions with objects! (Seb & Kevin)
+
 */
 
 public class Game extends JPanel implements ActionListener, KeyListener {
     
-    // Jumping condition (If in air, jumping isn't allowed. THE BALL IS NOT A JEDI! :D)
-    public static boolean canJump = true;
-    public static boolean canMove = true;
-    /* Creates a refresher (the actionlistener in the class ^^ is updating every 5ms) */
+    // Creates a refresher (the actionlistener in the class ^^ is updating every 5ms)
     Timer t = new Timer(5, this);
-    /* x and y are current points, the vel points are to be added to the x & y to redraw the ball every 5ms which is how the movement is done! */
-    double x = 360, y = 498, velx = 0, vely = 0; // Ball properties
-    double x1, y1 = 10, vel1 = 0;
-    double x2, y2 = 10, vel2 = 0;
-    double x3, y3 = 10, vel3 = 0;
-    double x4, y4 = 10, vel4 = 0;
-    double x5, y5 = 10, vel5 = 0;
+    // Movement conditions
+    public static boolean canJump = true;
+    public static boolean gameEnded = false;
+    
+    /* Object properties */
+    // Player
+    public static int x = 360, y = 498, velx = 0, vely = 0;
+    // Obstacles
+    public static int x1, y1 = 10, vel1 = 0;
+    public static int x2, y2 = 10, vel2 = 0;
+    public static int x3, y3 = 10, vel3 = 0;
+    public static int x4, y4 = 10, vel4 = 0;
+    public static int x5, y5 = 10, vel5 = 0;
+    // Width for ALL objects
+    public static int width = 25, height = 25;
     
     public Game() {
-        /* Starts the timer */
-        t.start();
-        /* Setting properties */
-        addKeyListener(this);
-        setFocusable(true);
-        setFocusTraversalKeysEnabled(false);
+        t.start(); // Starts the timer
+        addKeyListener(this); // Adds a keyListener for key press inputs
+        setFocusable(true); // Focuses on the program so it can be interacted with
     }
     
-    /* Creating the 2d graphics renderer */
+    // Graphic renderer. Displays all graphic images.
     public void paint(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
+        // Creating the objects
         g2.setColor(new Color(28,147,1)); // Platform colour
         g2.fill(new Rectangle2D.Double(0, 523, 795, 50)); // Platform
-        g2.setColor(new Color(244,185,66)); // Ball colour
-        g2.fill(new Ellipse2D.Double(x, y, 25, 25)); // Ball
+        g2.setColor(new Color(244,185,66)); // Player colour
+        g2.fill(new Rectangle2D.Double(x, y, width, height)); // Player
         g2.setColor(new Color(0,0,255)); // Obstacle colours
-        g2.fill(new Rectangle2D.Double(x1, y1, 25, 25)); // Obstacle 1
-        g2.fill(new Rectangle2D.Double(x2, y2, 25, 25)); // Obstacle 1
-        g2.fill(new Rectangle2D.Double(x3, y3, 25, 25)); // Obstacle 1
-        g2.fill(new Rectangle2D.Double(x4, y4, 25, 25)); // Obstacle 1
-        g2.fill(new Rectangle2D.Double(x5, y5, 25, 25)); // Obstacle 1
+        g2.fill(new Rectangle2D.Double(x1, y1, width, height)); // Obstacle 1
+        g2.fill(new Rectangle2D.Double(x2, y2, width, height)); // Obstacle 1
+        g2.fill(new Rectangle2D.Double(x3, y3, width, height)); // Obstacle 1
+        g2.fill(new Rectangle2D.Double(x4, y4, width, height)); // Obstacle 1
+        g2.fill(new Rectangle2D.Double(x5, y5, width, height)); // Obstacle 1
     }
     
-    /* Everytime ANYTHING happens (ie. a keypress), it's changing the x & y coords and repainting the canvas with the updated coordinates */
-    public void actionPerformed(ActionEvent e) {
-        
-        // BALL
+    // Borders
+    public void borders() {
         // X Borders
         if ((x + velx >= 0 && x + velx <= 770)) {
             // Allows movement
@@ -92,14 +95,20 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         } else {
             vely = 0;
         }
-        
-        // Painting the ball
-        x += velx;
-        y += vely;
-        
-        // Gravity for the ball
+    }
+    
+    // Player
+    public void player() {
+        if (!gameEnded) {
+            x += velx;
+            y += vely;
+        }
+    }
+    
+    // Gravity
+    public void gravity() {
         if (y < 498) {
-            if (canMove) {
+            if (!gameEnded) {
                 y += 4;
             } else {
                 y += 0;
@@ -114,71 +123,130 @@ public class Game extends JPanel implements ActionListener, KeyListener {
                 y = 498;
             }
         }
+    }
+    
+    // Obstacles
+    public void obstacle1() {
+        if (!gameEnded) {
+            // Generating random numbers for the obstacle to spawn in when it's at the top of the map
+            if (y1 == 10) {
+                int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
+                int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
+                x1 = randomX;
+                vel1 = randomY;
+            }
+            y1 += vel1;
+            // If it reaches the ground it goes back up and repeats
+            if (y1 >= 498) {
+                y1 = 10;
+            }
+        }
+    }
+    
+    public void obstacle2() {
+        if (!gameEnded) {
+            if (y2 == 10) {
+                int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
+                int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
+                x2 = randomX;
+                vel2 = randomY;
+            }
+            y2 += vel2;
+            if (y2 >= 498) {
+                y2 = 10;
+            }
+        }
+    }
+    
+    public void obstacle3() {
+        if (!gameEnded) {
+            if (y3 == 10) {
+                int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
+                int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
+                x3 = randomX;
+                vel3 = randomY;
+            }
+            y3 += vel3;
+            if (y3 >= 498) {
+                y3 = 10;
+            }
+        }
+    }
+    
+    public void obstacle4() {
+        if (!gameEnded) {
+            if (y4 == 10) {
+                int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
+                int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
+                x4 = randomX;
+                vel4 = randomY;
+            }
+            y4 += vel4;
+            if (y4 >= 498) {
+                y4 = 10;
+            }
+        }
+    }
+    
+    public void obstacle5() {
+        if (!gameEnded) {
+            if (y5 == 10) {
+                int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
+                int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
+                x5 = randomX;
+                vel5 = randomY;
+            }
+            y5 += vel5;
+            if (y5 >= 498) {
+                y5 = 10;
+            }
+        }
+    }
+    
+
+    public void collisions() {
+        // Creating objects associated with the necessary rendered shapes
+        Rectangle player = new Rectangle(x, y, width, height);
+        Rectangle o1 = new Rectangle(x1, y1, width, height);
+        Rectangle o2 = new Rectangle(x2, y2, width, height);
+        Rectangle o3 = new Rectangle(x3, y3, width, height);
+        Rectangle o4 = new Rectangle(x4, y4, width, height);
+        Rectangle o5 = new Rectangle(x5, y5, width, height);
         
-        // OBSTACLES
-        // Ball 1
-        // Random starting value
-        if (y1 == 10) {
-            double randomX = (Math.random()*((760-5) + 1)) + 5;
-            double randomY = (Math.random()*((5-2) + 1)) + 4;
-            x1 = randomX;
-            vel1 = randomY;
+        // Executing collisions
+        if (player.intersects(o1)) {
+            stopGame();
         }
-        y1 += vel1;
-        // Bringing the ball back up
-        if (y1 >= 498) {
-            y1 = 10;
+        if (player.intersects(o2)) {
+            stopGame();
         }
+        if (player.intersects(o3)) {
+            stopGame();
+        }
+        if (player.intersects(o4)) {
+            stopGame();
+        }
+        if (player.intersects(o5)) {
+            stopGame();
+        }
+    }
+    
+    public void stopGame() {
+        gameEnded = true;
+    }
+    
+    /* Everytime the actionlistener is called for through the timer it redoes this which allows for constant frame painting (refreshing) */
+    public void actionPerformed(ActionEvent e) {
         
-        // Ball 2
-        if (y2 == 10) {
-            double randomX = (Math.random()*((760-5) + 1)) + 5;
-            double randomY = (Math.random()*((5-2) + 1)) + 2;
-            x2 = randomX;
-            vel2 = randomY;
-        }
-        y2 += vel2;
-        if (y2 >= 498) {
-            y2 = 10;
-        }
-        
-        // Ball 3
-        if (y3 == 10) {
-            double randomX = (Math.random()*((760-5) + 1)) + 5;
-            double randomY = (Math.random()*((5-2) + 1)) + 2;
-            x3 = randomX;
-            vel3 = randomY;
-        }
-        y3 += vel3;
-        if (y3 >= 498) {
-            y3 = 10;
-        }
-        
-        // Ball 4
-        if (y5 == 10) {
-            double randomX = (Math.random()*((760-5) + 1)) + 5;
-            double randomY = (Math.random()*((5-2) + 1)) + 2;
-            x4 = randomX;
-            vel4 = randomY;
-        }
-        y4 += vel4;
-        if (y4 >= 498) {
-            y4 = 10;
-        }
-        
-        // Ball 5
-        if (y5 == 10) {
-            double randomX = (Math.random()*((760-5) + 1)) + 5;
-            double randomY = (Math.random()*((5-2) + 1)) + 2;
-            x5 = randomX;
-            vel5 = randomY;
-        }
-        y5 += vel5;
-        if (y5 >= 498) {
-            y5 = 10;
-        }
-        
-        // Colissions!
+        borders();
+        player();
+        gravity();
+        obstacle1();
+        obstacle2();
+        obstacle3();
+        obstacle4();
+        obstacle5();
+        collisions();
         repaint();
         
     }
@@ -186,22 +254,16 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     // Creates controllable movement for the ball
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
-        if (code == KeyEvent.VK_UP) {
-           if (canJump) {
-               vely = -9;
-           }
+        if (code == KeyEvent.VK_UP && canJump && !gameEnded) {
+            vely = -9;
         }
-        if (code == KeyEvent.VK_LEFT) {
-            if (canMove) {
-                velx = -4.5;
-            }
+        if (code == KeyEvent.VK_LEFT && !gameEnded) {
+            velx = (int) -4.5;
         }
-        if (code == KeyEvent.VK_RIGHT) {
-            if (canMove) {
-                velx = 4.5;
-            }
+        if (code == KeyEvent.VK_RIGHT && !gameEnded) {
+                velx = (int) 4.5;
         }
-        // System.out.println("X: " + x + ", Y: " + y); // Displays X and Y coords
+        // System.out.println("X: " + x + ", Y: " + y); // Displays X and Y coords on key press!
     }
     
     // Stops movement if a key is released
