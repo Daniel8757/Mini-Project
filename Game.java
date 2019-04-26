@@ -34,6 +34,8 @@ Update Log:
 
 4/26/19:
 - Added collisions with objects! (Seb & Kevin)
+- Added God mode. (Seb)
+- Added Flight mode. (Seb)
 
 FOR KEVIN AND DANIEL:
 - Create a start menu
@@ -49,6 +51,9 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     // Movement conditions
     public static boolean canJump = true;
     public static boolean gameEnded = false;
+    // Cheat conditions
+    public static boolean godMode = false;
+    public static boolean flightMode = false;
     
     /* Object properties */
     // Player
@@ -87,18 +92,34 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     
     // Borders
     public void borders() {
-        // X Borders
-        if ((x + velx >= 0 && x + velx <= 770)) {
-            // Allows movement
+        if (!flightMode) {
+            // X Borders
+            if ((x + velx >= 0 && x + velx <= 770)) {
+                // Allows movement
+            } else {
+               velx = 0;
+            }
+
+            // Y Borders
+            if (y + vely <= 498 && y >= 350) {
+                // Allows movement
+            } else {
+                vely = 0;
+            }
         } else {
-           velx = 0;
-        }
-        
-        // Y Borders
-        if (y + vely <= 498 && y >= 350) {
-            // Allows movement
-        } else {
-            vely = 0;
+            // X Borders
+            if ((x + velx >= 0 && x + velx <= 770)) {
+                // Allows movement
+            } else {
+               velx = 0;
+            }
+
+            // Y Borders
+            if (y + vely <= 498 && y + vely >= 2) {
+                // Allows movement
+            } else {
+                vely = 0;
+            }
         }
     }
     
@@ -112,20 +133,24 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     
     // Gravity
     public void gravity() {
-        if (y < 498) {
-            if (!gameEnded) {
-                y += 4;
+        if (!flightMode) {
+            if (y < 498) {
+                if (!gameEnded) {
+                    y += 4;
+                } else {
+                    y += 0;
+                }
+                // Disables jumping while in air
+                if (!flightMode) {
+                    canJump = false;
+                }
             } else {
-                y += 0;
-            }
-            // Disables jumping while in air
-            canJump = false;
-        } else {
-            // Means the ball has landed because it has reached the ground coords and is able to jump!
-            canJump = true;
-            // The gravity tends to pull the ball past because of it's number setup with the ground so this fixes that.
-            if (y > 498) {
-                y = 498;
+                // Means the ball has landed because it has reached the ground coords and is able to jump!
+                canJump = true;
+                // The gravity tends to pull the ball past because of it's number setup with the ground so this fixes that.
+                if (y > 498) {
+                    y = 498;
+                }
             }
         }
     }
@@ -218,21 +243,23 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         Rectangle o4 = new Rectangle(x4, y4, width, height);
         Rectangle o5 = new Rectangle(x5, y5, width, height);
         
-        // Executing collisions
-        if (player.intersects(o1)) {
-            stopGame();
-        }
-        if (player.intersects(o2)) {
-            stopGame();
-        }
-        if (player.intersects(o3)) {
-            stopGame();
-        }
-        if (player.intersects(o4)) {
-            stopGame();
-        }
-        if (player.intersects(o5)) {
-            stopGame();
+        if (!godMode) {
+            // Executing collisions
+            if (player.intersects(o1)) {
+                stopGame();
+            }
+            if (player.intersects(o2)) {
+                stopGame();
+            }
+            if (player.intersects(o3)) {
+                stopGame();
+            }
+            if (player.intersects(o4)) {
+                stopGame();
+            }
+            if (player.intersects(o5)) {
+                stopGame();
+            }
         }
     }
     
@@ -259,14 +286,41 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     // Creates controllable movement for the ball
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
+        // Movements
         if (code == KeyEvent.VK_UP && canJump && !gameEnded) {
-            vely = -9;
+            if (!flightMode) {
+                vely = -9;
+            } else {
+                vely = (int) -4.5;
+            }
+        }
+        if (code == KeyEvent.VK_DOWN && flightMode) {
+            vely = (int) 4.5;
         }
         if (code == KeyEvent.VK_LEFT && !gameEnded) {
             velx = (int) -4.5;
         }
         if (code == KeyEvent.VK_RIGHT && !gameEnded) {
                 velx = (int) 4.5;
+        }
+        // God mode
+        if (code == KeyEvent.VK_G) {
+            if (!godMode) {
+                godMode = true;
+            } else {
+                godMode = false;
+            }
+            System.out.println("GODMODE: " + godMode);
+        }
+        // Flight mode
+        if (code == KeyEvent.VK_F) {
+            if (!flightMode) {
+                canJump = true;
+                flightMode = true;
+            } else {
+                flightMode = false;
+            }
+            System.out.println("FLIGHTMODE: " + flightMode);
         }
         // System.out.println("X: " + x + ", Y: " + y); // Displays X and Y coords on key press!
     }
@@ -275,6 +329,12 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         int code = e.getKeyCode();
+        if (code == KeyEvent.VK_UP && flightMode) {
+            vely = 0;
+        }
+        if (code == KeyEvent.VK_DOWN && flightMode) {
+            vely = 0;
+        }
         if (code == KeyEvent.VK_LEFT) {
             velx = 0;
         }
@@ -285,7 +345,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     
     @Override
     public void keyTyped(KeyEvent e) {
-        System.out.println("Not yet implemented!");        
+        // Not supported
     }
     
     public static void main(String [] args) {
