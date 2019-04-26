@@ -35,6 +35,11 @@ Update Log:
 4/26/19:
 - Added collisions with objects! (Seb & Kevin)
 
+FOR KEVIN AND DANIEL:
+- Create a start menu
+- Create a game over menu with restart or main menu options
+- Modify the code and make it as good as possible (if needed)!
+
 */
 
 public class Game extends JPanel implements ActionListener, KeyListener {
@@ -71,7 +76,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         g2.setColor(new Color(28,147,1)); // Platform colour
         g2.fill(new Rectangle2D.Double(0, 523, 795, 50)); // Platform
         g2.setColor(new Color(244,185,66)); // Player colour
-        g2.fill(new Rectangle2D.Double(x, y, width, height)); // Player
+        g2.fill(new Ellipse2D.Double(x, y, width, height)); // Player
         g2.setColor(new Color(0,0,255)); // Obstacle colours
         g2.fill(new Rectangle2D.Double(x1, y1, width, height)); // Obstacle 1
         g2.fill(new Rectangle2D.Double(x2, y2, width, height)); // Obstacle 1
