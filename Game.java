@@ -22,10 +22,10 @@ Update Log:
 
 4/16/19:
 - Created a moving ball. (Seb)
-- Created solid borders. 100% working! (Seb)
+- Created solid boundaries. 100% working! (Seb)
 
 4/23/19:
-- Individual colours for objects (Seb)
+- Individual colours for objects. (Seb)
 - Fixed border movement. (Seb)
 
 4/24/19:
@@ -39,12 +39,12 @@ Update Log:
 - Improved obstacle difficulty. (Seb)
 
 4/26/19:
-- Added collisions with player & objects! (Seb & Kevin)
+- Added collisions with player & obstacles! (Seb & Kevin)
 - Added God mode. (Seb)
 - Added Flight mode. (Seb)
-- Added more obstacles (Doubled, it's still not even hard unless you're a noob :P).
+- Added Obstacle toggler. (Seb)
 - Fixed general movement. (Seb)
-- Added obstacle toggler. (Seb)
+- Added more obstacles (Doubled, it's still not even hard unless you're a noob :P).
 
 FOR KEVIN AND DANIEL:
 - Create a start menu
