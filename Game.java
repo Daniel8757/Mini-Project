@@ -9,23 +9,29 @@ import java.awt.geom.*;
 
 Developed by: Kevin Bui, Daniel Li, Sebastian Kamal
 Date of creation: 4/16/19
-Last edited on: 4/16/19
+Last edited on: 4/26/19
+
+Info:
+
+Keybinds:
+    G - Godmode
+    F - Flightmode
+    C - Toggle obstacles
 
 Update Log:
 
 4/16/19:
-- Fixed solid borders. 100% working! (Seb)
-- Added optional pacman styled borders. (Seb)
+- Created a moving ball. (Seb)
+- Created solid borders. 100% working! (Seb)
 
 4/23/19:
 - Individual colours for objects (Seb)
 - Fixed border movement. (Seb)
-- Removed pacman borders. They were uneeded (Seb).
 
 4/24/19:
-- Added gravity! The ball will always fall back down! (Seb)
+- Added player gravity. The ball will always fall back down! (Seb)
 - Added jumping! (Non parabolic)(Seb)
-- Fixed the gravity and jumping. (Seb)
+- Improved general game mechanics. (Seb)
 
 4/25/19:
 - Added obstacles! They don't have collisions. (Seb)
@@ -33,10 +39,12 @@ Update Log:
 - Improved obstacle difficulty. (Seb)
 
 4/26/19:
-- Added collisions with objects! (Seb & Kevin)
+- Added collisions with player & objects! (Seb & Kevin)
 - Added God mode. (Seb)
 - Added Flight mode. (Seb)
-- Added more obstacles (Doubled, it's still not even hard unless you're a noob).
+- Added more obstacles (Doubled, it's still not even hard unless you're a noob :P).
+- Fixed general movement. (Seb)
+- Added obstacle toggler. (Seb)
 
 FOR KEVIN AND DANIEL:
 - Create a start menu
@@ -54,6 +62,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     // Cheat conditions
     public static boolean godMode = false;
     public static boolean flightMode = false;
+    public static boolean noObstacles = false;
     
     /* Object properties */
     // Player
@@ -88,28 +97,30 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         g2.setColor(new Color(244,185,66)); // Player colour
         g2.fill(new Ellipse2D.Double(x, y, width, height)); // Player
         g2.setColor(new Color(0,0,255)); // Obstacle colours
-        g2.fill(new Rectangle2D.Double(x1, y1, width, height)); // Obstacle 1
-        g2.fill(new Rectangle2D.Double(x2, y2, width, height)); // Obstacle 2
-        g2.fill(new Rectangle2D.Double(x3, y3, width, height)); // Obstacle 3
-        g2.fill(new Rectangle2D.Double(x4, y4, width, height)); // Obstacle 4
-        g2.fill(new Rectangle2D.Double(x5, y5, width, height)); // Obstacle 5
-        g2.fill(new Rectangle2D.Double(x6, y6, width, height)); // Obstacle 6
-        g2.fill(new Rectangle2D.Double(x7, y7, width, height)); // Obstacle 7
-        g2.fill(new Rectangle2D.Double(x8, y8, width, height)); // Obstacle 8
-        g2.fill(new Rectangle2D.Double(x9, y9, width, height)); // Obstacle 9
-        g2.fill(new Rectangle2D.Double(x10, y10, width, height)); // Obstacle10
+        if (!noObstacles) {
+            g2.fill(new Rectangle2D.Double(x1, y1, width, height)); // Obstacle 1
+            g2.fill(new Rectangle2D.Double(x2, y2, width, height)); // Obstacle 2
+            g2.fill(new Rectangle2D.Double(x3, y3, width, height)); // Obstacle 3
+            g2.fill(new Rectangle2D.Double(x4, y4, width, height)); // Obstacle 4
+            g2.fill(new Rectangle2D.Double(x5, y5, width, height)); // Obstacle 5
+            g2.fill(new Rectangle2D.Double(x6, y6, width, height)); // Obstacle 6
+            g2.fill(new Rectangle2D.Double(x7, y7, width, height)); // Obstacle 7
+            g2.fill(new Rectangle2D.Double(x8, y8, width, height)); // Obstacle 8
+            g2.fill(new Rectangle2D.Double(x9, y9, width, height)); // Obstacle 9
+            g2.fill(new Rectangle2D.Double(x10, y10, width, height)); // Obstacle10
+        }
     }
     
     // Borders
-    public void borders() {
-        if (!flightMode) {
-            // X Borders
-            if ((x + velx >= 0 && x + velx <= 770)) {
-                // Allows movement
-            } else {
-               velx = 0;
-            }
+    public void boundaries() {
+        // X Borders
+        if ((x + velx >= 0 && x + velx <= 770)) {
+            // Allows movement
+        } else {
+           velx = 0;
+        }
 
+        if (!flightMode) {
             // Y Borders
             if (y + vely <= 498 && y >= 350) {
                 // Allows movement
@@ -117,13 +128,6 @@ public class Game extends JPanel implements ActionListener, KeyListener {
                 vely = 0;
             }
         } else {
-            // X Borders
-            if ((x + velx >= 0 && x + velx <= 770)) {
-                // Allows movement
-            } else {
-               velx = 0;
-            }
-
             // Y Borders
             if (y + vely <= 498 && y + vely >= -1) {
                 // Allows movement
@@ -134,7 +138,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     }
     
     // Player
-    public void player() {
+    public void updatePlayer() {
         if (!gameEnded) {
             x += velx;
             y += vely;
@@ -142,22 +146,18 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     }
     
     // Gravity
-    public void gravity() {
-        if (!flightMode) {
+    public void playerGravity() {
+        if (!gameEnded) {
             if (y < 498) {
-                if (!gameEnded) {
-                    y += 4;
-                } else {
-                    y += 0;
-                }
-                // Disables jumping while in air
                 if (!flightMode) {
+                    y += 4;
+                    // Disables jumping while in air
                     canJump = false;
                 }
             } else {
-                // Means the ball has landed because it has reached the ground coords and is able to jump!
+                // Means the ball has landed because it has reached the ground coords and is able to jump.
                 canJump = true;
-                // The gravity tends to pull the ball past because of it's number setup with the ground so this fixes that.
+                // Bug fix, ignore this (Sets the ball to be level with platform no matter what)
                 if (y > 498) {
                     y = 498;
                 }
@@ -167,14 +167,16 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     
     // Obstacles
     public void obstacle1() {
-        if (!gameEnded) {
+        if (!gameEnded && !noObstacles) {
             // Generating random numbers for the obstacle to spawn in when it's at the top of the map
             if (y1 == 10) {
                 int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
                 int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
+                // Setting X and speed of falling to random values
                 x1 = randomX;
                 vel1 = randomY;
             }
+            // Making the obstacle fall at random speed
             y1 += vel1;
             // If it reaches the ground it goes back up and repeats
             if (y1 >= 498) {
@@ -184,7 +186,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     }
     
     public void obstacle2() {
-        if (!gameEnded) {
+        if (!gameEnded && !noObstacles) {
             if (y2 == 10) {
                 int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
                 int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
@@ -199,7 +201,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     }
     
     public void obstacle3() {
-        if (!gameEnded) {
+        if (!gameEnded && !noObstacles) {
             if (y3 == 10) {
                 int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
                 int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
@@ -214,7 +216,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     }
     
     public void obstacle4() {
-        if (!gameEnded) {
+        if (!gameEnded && !noObstacles) {
             if (y4 == 10) {
                 int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
                 int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
@@ -229,7 +231,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     }
     
     public void obstacle5() {
-        if (!gameEnded) {
+        if (!gameEnded && !noObstacles) {
             if (y5 == 10) {
                 int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
                 int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
@@ -244,7 +246,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     }
     
     public void obstacle6() {
-        if (!gameEnded) {
+        if (!gameEnded && !noObstacles) {
             if (y6 == 10) {
                 int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
                 int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
@@ -259,7 +261,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     }
     
     public void obstacle7() {
-        if (!gameEnded) {
+        if (!gameEnded && !noObstacles) {
             if (y7 == 10) {
                 int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
                 int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
@@ -274,7 +276,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     }
     
     public void obstacle8() {
-        if (!gameEnded) {
+        if (!gameEnded && !noObstacles) {
             if (y8 == 10) {
                 int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
                 int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
@@ -289,7 +291,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     }
     
     public void obstacle9() {
-        if (!gameEnded) {
+        if (!gameEnded && !noObstacles) {
             if (y9 == 10) {
                 int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
                 int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
@@ -304,7 +306,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     }
     
     public void obstacle10() {
-        if (!gameEnded) {
+        if (!gameEnded && !noObstacles) {
             if (y10 == 10) {
                 int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
                 int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
@@ -332,7 +334,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         Rectangle o9 = new Rectangle(x9, y9, width, height);
         Rectangle o10 = new Rectangle(x10, y10, width, height);
         
-        if (!godMode) {
+        if (!godMode && !noObstacles) {
             // Executing collisions
             if (player.intersects(o1)) {
                 stopGame();
@@ -367,29 +369,6 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         }
     }
     
-    public void stopGame() {
-        gameEnded = true;
-    }
-    
-    /* Everytime the actionlistener is called for through the timer it redoes this which allows for constant frame painting (refreshing) */
-    public void actionPerformed(ActionEvent e) {
-        borders();
-        player();
-        gravity();
-        obstacle1();
-        obstacle2();
-        obstacle3();
-        obstacle4();
-        obstacle5();
-        obstacle6();
-        obstacle7();
-        obstacle8();
-        obstacle9();
-        obstacle10();
-        collisions();
-        repaint();
-    }
-    
     // Creates controllable movement for the ball
     public void keyPressed(KeyEvent e) {
         if (!gameEnded) {
@@ -397,39 +376,44 @@ public class Game extends JPanel implements ActionListener, KeyListener {
             // Movements
             if (code == KeyEvent.VK_UP && canJump) {
                 if (!flightMode) {
-                    vely = -9;
+                    vely = -7;
                 } else {
-                    vely = (int) -4.5;
+                    vely = (int) -3.5;
                 }
             }
             if (code == KeyEvent.VK_DOWN && flightMode) {
-                vely = (int) 4.5;
+                vely = (int) 3.5;
             }
             if (code == KeyEvent.VK_LEFT) {
-                velx = (int) -4.5;
+                velx = (int) -3.5;
             }
             if (code == KeyEvent.VK_RIGHT) {
-                    velx = (int) 4.5;
+                velx = (int) 3.5;
             }
             // God mode
             if (code == KeyEvent.VK_G) {
-                if (!godMode) {
-                    godMode = true;
-                } else {
-                    godMode = false;
-                }
+                godMode = !godMode;
                 System.out.println("GODMODE: " + godMode);
             }
             // Flight mode
             if (code == KeyEvent.VK_F) {
                 if (!flightMode) {
+                    flightMode = true;
                     canJump = true;
                     vely = 0;
-                    flightMode = true;
                 } else {
                     flightMode = false;
                 }
                 System.out.println("FLIGHTMODE: " + flightMode);
+            }
+            // No obstacles
+            if (code == KeyEvent.VK_C) {
+                noObstacles = !noObstacles;
+                if (noObstacles) {
+                    System.out.println("OBSTACLES: disabled");
+                } else {
+                    System.out.println("OBSTACLES: enabled");
+                }
             }
             // System.out.println("X: " + x + ", Y: " + y); // Displays X and Y coords on key press!
         }
@@ -458,6 +442,29 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         // Not supported
     }
     
+    public void stopGame() {
+        gameEnded = true;
+    }
+    
+    /* Everytime the actionlistener is called for through the timer it redoes this which allows for constant frame painting (refreshing) */
+    public void actionPerformed(ActionEvent e) {
+        boundaries();
+        updatePlayer();
+        playerGravity();
+        obstacle1();
+        obstacle2();
+        obstacle3();
+        obstacle4();
+        obstacle5();
+        obstacle6();
+        obstacle7();
+        obstacle8();
+        obstacle9();
+        obstacle10();
+        collisions();
+        repaint();
+    }
+    
     public static void main(String [] args) {
         Game game = new Game();
         
@@ -469,6 +476,4 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setSize(800, 600);
     }
-
-     
 }
