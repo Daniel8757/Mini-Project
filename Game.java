@@ -49,7 +49,7 @@ Update Log:
 FOR KEVIN AND DANIEL:
 - Create a start menu
 - Create a game over menu with restart or main menu options
-- Modify the code and make it as good as possible (if needed)!
+- Ensure the code is clean and ready to present.
 
 */
 
