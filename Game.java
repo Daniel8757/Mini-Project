@@ -376,7 +376,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
                 if (gamePaused) {
                     System.out.println("Game paused!");
                 } else {
-                    System.out.println("Game un-paused!");
+                    System.out.println("Game resumed!");
                 }
             }
             // God mode
