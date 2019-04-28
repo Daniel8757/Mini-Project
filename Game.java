@@ -14,6 +14,7 @@ Last edited on: 4/26/19
 Info:
 
 Keybinds:
+    Space - Pause
     G - Godmode
     F - Flightmode
     C - Toggle obstacles
@@ -46,6 +47,10 @@ Update Log:
 - Fixed general movement. (Seb)
 - Added more obstacles (Doubled, it's still not even hard unless you're a noob :P).
 
+4/28/19:
+- Improved the code (less repition for game end instances, it's all in one inside the actionPerformed now, much better). (Seb)
+- Added a game pauser keybind. (Seb)
+
 FOR KEVIN AND DANIEL:
 - Create a start menu
 - Create a game over menu with restart or main menu options
@@ -58,6 +63,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     Timer t = new Timer(5, this);
     // Movement conditions
     public static boolean canJump = true;
+    public static boolean gamePaused = false;
     public static boolean gameEnded = false;
     // Cheat conditions
     public static boolean godMode = false;
@@ -139,184 +145,160 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     
     // Player
     public void updatePlayer() {
-        if (!gameEnded) {
-            x += velx;
-            y += vely;
-        }
+        x += velx;
+        y += vely;
     }
     
     // Gravity
     public void playerGravity() {
-        if (!gameEnded) {
-            if (y < 498) {
-                if (!flightMode) {
-                    y += 4;
-                    // Disables jumping while in air
-                    canJump = false;
-                }
-            } else {
-                // Means the ball has landed because it has reached the ground coords and is able to jump.
-                canJump = true;
-                // Bug fix, ignore this (Sets the ball to be level with platform no matter what)
-                if (y > 498) {
-                    y = 498;
-                }
+        if (y < 498) {
+            if (!flightMode) {
+                y += 4;
+                // Disables jumping while in air
+                canJump = false;
+            }
+        } else {
+            // Means the ball has landed because it has reached the ground coords and is able to jump.
+            canJump = true;
+            // Bug fix, ignore this (Sets the ball to be level with platform no matter what)
+            if (y > 498) {
+                y = 498;
             }
         }
     }
     
     // Obstacles
     public void obstacle1() {
-        if (!gameEnded && !noObstacles) {
-            // Generating random numbers for the obstacle to spawn in when it's at the top of the map
-            if (y1 == 10) {
-                int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
-                int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
-                // Setting X and speed of falling to random values
-                x1 = randomX;
-                vel1 = randomY;
-            }
-            // Making the obstacle fall at random speed
-            y1 += vel1;
-            // If it reaches the ground it goes back up and repeats
-            if (y1 >= 498) {
-                y1 = 10;
-            }
+        // Generating random numbers for the obstacle to spawn in when it's at the top of the map
+        if (y1 == 10) {
+            int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
+            int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
+            // Setting X and speed of falling to random values
+            x1 = randomX;
+            vel1 = randomY;
+        }
+        // Making the obstacle fall at random speed
+        y1 += vel1;
+        // If it reaches the ground it goes back up and repeats
+        if (y1 >= 498) {
+            y1 = 10;
         }
     }
     
     public void obstacle2() {
-        if (!gameEnded && !noObstacles) {
-            if (y2 == 10) {
-                int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
-                int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
-                x2 = randomX;
-                vel2 = randomY;
-            }
-            y2 += vel2;
-            if (y2 >= 498) {
-                y2 = 10;
-            }
+        if (y2 == 10) {
+            int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
+            int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
+            x2 = randomX;
+            vel2 = randomY;
+        }
+        y2 += vel2;
+        if (y2 >= 498) {
+            y2 = 10;
         }
     }
     
     public void obstacle3() {
-        if (!gameEnded && !noObstacles) {
-            if (y3 == 10) {
-                int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
-                int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
-                x3 = randomX;
-                vel3 = randomY;
-            }
-            y3 += vel3;
-            if (y3 >= 498) {
-                y3 = 10;
-            }
+        if (y3 == 10) {
+            int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
+            int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
+            x3 = randomX;
+            vel3 = randomY;
+        }
+        y3 += vel3;
+        if (y3 >= 498) {
+            y3 = 10;
         }
     }
     
     public void obstacle4() {
-        if (!gameEnded && !noObstacles) {
-            if (y4 == 10) {
-                int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
-                int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
-                x4 = randomX;
-                vel4 = randomY;
-            }
-            y4 += vel4;
-            if (y4 >= 498) {
-                y4 = 10;
-            }
+        if (y4 == 10) {
+            int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
+            int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
+            x4 = randomX;
+            vel4 = randomY;
+        }
+        y4 += vel4;
+        if (y4 >= 498) {
+            y4 = 10;
         }
     }
     
     public void obstacle5() {
-        if (!gameEnded && !noObstacles) {
-            if (y5 == 10) {
-                int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
-                int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
-                x5 = randomX;
-                vel5 = randomY;
-            }
-            y5 += vel5;
-            if (y5 >= 498) {
-                y5 = 10;
-            }
+        if (y5 == 10) {
+            int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
+            int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
+            x5 = randomX;
+            vel5 = randomY;
+        }
+        y5 += vel5;
+        if (y5 >= 498) {
+            y5 = 10;
         }
     }
     
     public void obstacle6() {
-        if (!gameEnded && !noObstacles) {
-            if (y6 == 10) {
-                int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
-                int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
-                x6 = randomX;
-                vel6 = randomY;
-            }
-            y6 += vel6;
-            if (y6 >= 498) {
-                y6 = 10;
-            }
+        if (y6 == 10) {
+            int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
+            int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
+            x6 = randomX;
+            vel6 = randomY;
+        }
+        y6 += vel6;
+        if (y6 >= 498) {
+            y6 = 10;
         }
     }
     
     public void obstacle7() {
-        if (!gameEnded && !noObstacles) {
-            if (y7 == 10) {
-                int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
-                int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
-                x7 = randomX;
-                vel7 = randomY;
-            }
-            y7 += vel7;
-            if (y7 >= 498) {
-                y7 = 10;
-            }
+        if (y7 == 10) {
+            int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
+            int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
+            x7 = randomX;
+            vel7 = randomY;
+        }
+        y7 += vel7;
+        if (y7 >= 498) {
+            y7 = 10;
         }
     }
     
     public void obstacle8() {
-        if (!gameEnded && !noObstacles) {
-            if (y8 == 10) {
-                int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
-                int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
-                x8 = randomX;
-                vel8 = randomY;
-            }
-            y8 += vel8;
-            if (y8 >= 498) {
-                y8 = 10;
-            }
+        if (y8 == 10) {
+            int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
+            int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
+            x8 = randomX;
+            vel8 = randomY;
+        }
+        y8 += vel8;
+        if (y8 >= 498) {
+            y8 = 10;
         }
     }
     
     public void obstacle9() {
-        if (!gameEnded && !noObstacles) {
-            if (y9 == 10) {
-                int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
-                int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
-                x9 = randomX;
-                vel9 = randomY;
-            }
-            y9 += vel9;
-            if (y9 >= 498) {
-                y9 = 10;
-            }
+        if (y9 == 10) {
+            int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
+            int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
+            x9 = randomX;
+            vel9 = randomY;
+        }
+        y9 += vel9;
+        if (y9 >= 498) {
+            y9 = 10;
         }
     }
     
     public void obstacle10() {
-        if (!gameEnded && !noObstacles) {
-            if (y10 == 10) {
-                int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
-                int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
-                x10 = randomX;
-                vel10 = randomY;
-            }
-            y10 += vel10;
-            if (y10 >= 498) {
-                y10 = 10;
-            }
+        if (y10 == 10) {
+            int randomX = (int) (Math.random()*((760-5) + 1)) + 5;
+            int randomY = (int) (Math.random()*((5-2) + 1)) + 2;
+            x10 = randomX;
+            vel10 = randomY;
+        }
+        y10 += vel10;
+        if (y10 >= 498) {
+            y10 = 10;
         }
     }
 
@@ -334,38 +316,36 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         Rectangle o9 = new Rectangle(x9, y9, width, height);
         Rectangle o10 = new Rectangle(x10, y10, width, height);
         
-        if (!godMode && !noObstacles) {
-            // Executing collisions
-            if (player.intersects(o1)) {
-                stopGame();
-            }
-            if (player.intersects(o2)) {
-                stopGame();
-            }
-            if (player.intersects(o3)) {
-                stopGame();
-            }
-            if (player.intersects(o4)) {
-                stopGame();
-            }
-            if (player.intersects(o5)) {
-                stopGame();
-            }
-            if (player.intersects(o6)) {
-                stopGame();
-            }
-            if (player.intersects(o7)) {
-                stopGame();
-            }
-            if (player.intersects(o8)) {
-                stopGame();
-            }
-            if (player.intersects(o9)) {
-                stopGame();
-            }
-            if (player.intersects(o10)) {
-                stopGame();
-            }
+        // Executing collisions
+        if (player.intersects(o1)) {
+            stopGame();
+        }
+        if (player.intersects(o2)) {
+            stopGame();
+        }
+        if (player.intersects(o3)) {
+            stopGame();
+        }
+        if (player.intersects(o4)) {
+            stopGame();
+        }
+        if (player.intersects(o5)) {
+            stopGame();
+        }
+        if (player.intersects(o6)) {
+            stopGame();
+        }
+        if (player.intersects(o7)) {
+            stopGame();
+        }
+        if (player.intersects(o8)) {
+            stopGame();
+        }
+        if (player.intersects(o9)) {
+            stopGame();
+        }
+        if (player.intersects(o10)) {
+            stopGame();
         }
     }
     
@@ -389,6 +369,15 @@ public class Game extends JPanel implements ActionListener, KeyListener {
             }
             if (code == KeyEvent.VK_RIGHT) {
                 velx = (int) 3.5;
+            }
+            // Game pauser
+            if (code == KeyEvent.VK_SPACE) {
+                gamePaused = !gamePaused;
+                if (gamePaused) {
+                    System.out.println("Game paused!");
+                } else {
+                    System.out.println("Game un-paused!");
+                }
             }
             // God mode
             if (code == KeyEvent.VK_G) {
@@ -448,21 +437,29 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     
     /* Everytime the actionlistener is called for through the timer it redoes this which allows for constant frame painting (refreshing) */
     public void actionPerformed(ActionEvent e) {
-        boundaries();
-        updatePlayer();
-        playerGravity();
-        obstacle1();
-        obstacle2();
-        obstacle3();
-        obstacle4();
-        obstacle5();
-        obstacle6();
-        obstacle7();
-        obstacle8();
-        obstacle9();
-        obstacle10();
-        collisions();
-        repaint();
+        if (!gameEnded) {
+            if (!gamePaused) {
+                boundaries();
+                updatePlayer();
+                playerGravity();
+                if (!noObstacles) {
+                    obstacle1();
+                    obstacle2();
+                    obstacle3();
+                    obstacle4();
+                    obstacle5();
+                    obstacle6();
+                    obstacle7();
+                    obstacle8();
+                    obstacle9();
+                    obstacle10();
+                    if (!godMode) {
+                        collisions();
+                    }
+                }
+            }
+            repaint();
+        }
     }
     
     public static void main(String [] args) {
