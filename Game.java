@@ -9,12 +9,11 @@ import java.awt.geom.*;
 
 Developed by: Kevin Bui, Daniel Li, Sebastian Kamal
 Date of creation: 4/16/19
-Last edited on: 4/26/19
-
-Info:
+Last edited on: 4/28/19
 
 Keybinds:
     Space - Pause
+    R - Restart game
     G - Godmode
     F - Flightmode
     C - Toggle obstacles
@@ -50,6 +49,9 @@ Update Log:
 4/28/19:
 - Improved the code (less repition for game end instances, it's all in one inside the actionPerformed now, much better). (Seb)
 - Added a game pauser keybind. (Seb)
+- Resets obstacles' positions when obstacles are disabled. (Seb)
+- Added a restart function. (Seb)
+- Added GUI functions. (Seb)
 
 FOR KEVIN AND DANIEL:
 - Create a start menu
@@ -63,7 +65,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     Timer t = new Timer(5, this);
     // Movement conditions
     public static boolean canJump = true;
-    public static boolean gamePaused = false;
+    public static boolean gamePaused = true;
     public static boolean gameEnded = false;
     // Cheat conditions
     public static boolean godMode = false;
@@ -72,7 +74,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     
     /* Object properties */
     // Player
-    public static int x = 360, y = 498, velx = 0, vely = 0;
+    public static int x = 370, y = 498, velx = 0, vely = 0;
     // Obstacles
     public static int x1, y1 = 10, vel1 = 0;
     public static int x2, y2 = 10, vel2 = 0;
@@ -117,6 +119,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         }
     }
     
+    // Game mechanics
     // Borders
     public void boundaries() {
         // X Borders
@@ -147,10 +150,6 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     public void updatePlayer() {
         x += velx;
         y += vely;
-    }
-    
-    // Gravity
-    public void playerGravity() {
         if (y < 498) {
             if (!flightMode) {
                 y += 4;
@@ -349,62 +348,136 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         }
     }
     
+    public static void up() {
+        if (canJump) {
+            if (!flightMode) {
+                vely = -7;
+            } else {
+                vely = (int) -3.5;
+            }
+        }
+    }
+    
+    public static void down() {
+        if (flightMode) {
+            vely = (int) 3.5;
+        }
+    }
+    
+    public static void left() {
+        velx = (int) -3.5;
+    }
+    
+    public static void right() {
+        velx = (int) 3.5;
+    }
+    
+    // Cheat methods
+    public static void toggleGod() {
+        godMode = !godMode;
+        System.out.println("GODMODE: " + godMode);
+    }
+    
+    public static void toggleFlight() {
+        if (!flightMode) {
+            flightMode = true;
+            canJump = true;
+            vely = 0;
+        } else {
+            flightMode = false;
+        }
+        System.out.println("FLIGHTMODE: " + flightMode);
+    }
+    
+    public static void toggleObstacles() {
+        noObstacles = !noObstacles;
+        if (noObstacles) {
+            System.out.println("OBSTACLES: disabled");
+            resetObstacles();
+        } else {
+            System.out.println("OBSTACLES: enabled");
+        }
+    }
+    
+    public static void pauseGame() {
+        if (!gameEnded) {
+            gamePaused = !gamePaused;
+            if (gamePaused) {
+                System.out.println("Game stopped!");
+            } else {
+                System.out.println("Game started!");
+            }
+        } else {
+            resetGame();
+        }
+    }
+    
+    public static void resetPlayer() {
+        x = 370; y = 498; velx = 0; vely = 0;
+    }
+    
+    public static void resetObstacles() {
+        x1 = (int) ((Math.random()*((760-5) + 1)) + 5); y1 = 0;
+        x2 = (int) ((Math.random()*((760-5) + 1)) + 5); y2 = 0;
+        x3 = (int) ((Math.random()*((760-5) + 1)) + 5); y3 = 0;
+        x4 = (int) ((Math.random()*((760-5) + 1)) + 5); y4 = 0;
+        x5 = (int) ((Math.random()*((760-5) + 1)) + 5); y5 = 0;
+        x6 = (int) ((Math.random()*((760-5) + 1)) + 5); y6 = 0;
+        x7 = (int) ((Math.random()*((760-5) + 1)) + 5); y7 = 0;
+        x8 = (int) ((Math.random()*((760-5) + 1)) + 5); y8 = 0;
+        x9 = (int) ((Math.random()*((760-5) + 1)) + 5); y9 = 0;
+        x10 = (int) ((Math.random()*((760-5) + 1)) + 5); y10 = 0;
+    }
+    
+    public static void resetGame() {
+        resetPlayer();
+        resetObstacles();
+        gameEnded = false;
+        System.out.println("Game restarted!");
+    }
+    
+    public void stopGame() {
+        gameEnded = true;
+    }
+    
     // Creates controllable movement for the ball
     public void keyPressed(KeyEvent e) {
+        int code = e.getKeyCode();
         if (!gameEnded) {
-            int code = e.getKeyCode();
             // Movements
-            if (code == KeyEvent.VK_UP && canJump) {
-                if (!flightMode) {
-                    vely = -7;
-                } else {
-                    vely = (int) -3.5;
-                }
+            if (code == KeyEvent.VK_UP) {
+                up();
             }
-            if (code == KeyEvent.VK_DOWN && flightMode) {
-                vely = (int) 3.5;
+            if (code == KeyEvent.VK_DOWN) {
+                down();
             }
             if (code == KeyEvent.VK_LEFT) {
-                velx = (int) -3.5;
+                left();
             }
             if (code == KeyEvent.VK_RIGHT) {
-                velx = (int) 3.5;
+                right();
             }
-            // Game pauser
-            if (code == KeyEvent.VK_SPACE) {
-                gamePaused = !gamePaused;
-                if (gamePaused) {
-                    System.out.println("Game paused!");
-                } else {
-                    System.out.println("Game resumed!");
-                }
-            }
-            // God mode
-            if (code == KeyEvent.VK_G) {
-                godMode = !godMode;
-                System.out.println("GODMODE: " + godMode);
-            }
-            // Flight mode
-            if (code == KeyEvent.VK_F) {
-                if (!flightMode) {
-                    flightMode = true;
-                    canJump = true;
-                    vely = 0;
-                } else {
-                    flightMode = false;
-                }
-                System.out.println("FLIGHTMODE: " + flightMode);
-            }
-            // No obstacles
-            if (code == KeyEvent.VK_C) {
-                noObstacles = !noObstacles;
-                if (noObstacles) {
-                    System.out.println("OBSTACLES: disabled");
-                } else {
-                    System.out.println("OBSTACLES: enabled");
-                }
-            }
-            // System.out.println("X: " + x + ", Y: " + y); // Displays X and Y coords on key press!
+        }
+        // Game pauser
+        if (code == KeyEvent.VK_SPACE) {
+            pauseGame();
+        }
+        // Reset game
+        if (code == KeyEvent.VK_R) {
+            resetGame();
+        }
+        // Cheats keybinds
+        // God mode
+        if (code == KeyEvent.VK_G) {
+            toggleGod();
+        }
+        // Flight mode
+        if (code == KeyEvent.VK_F) {
+            toggleFlight();
+        }
+        // No obstacles
+        if (code == KeyEvent.VK_C) {
+            toggleObstacles();
         }
     }
     
@@ -431,31 +504,24 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         // Not supported
     }
     
-    public void stopGame() {
-        gameEnded = true;
-    }
-    
     /* Everytime the actionlistener is called for through the timer it redoes this which allows for constant frame painting (refreshing) */
     public void actionPerformed(ActionEvent e) {
-        if (!gameEnded) {
-            if (!gamePaused) {
-                boundaries();
-                updatePlayer();
-                playerGravity();
-                if (!noObstacles) {
-                    obstacle1();
-                    obstacle2();
-                    obstacle3();
-                    obstacle4();
-                    obstacle5();
-                    obstacle6();
-                    obstacle7();
-                    obstacle8();
-                    obstacle9();
-                    obstacle10();
-                    if (!godMode) {
-                        collisions();
-                    }
+        if (!gameEnded && !gamePaused) {
+            boundaries();
+            updatePlayer();
+            if (!noObstacles) {
+                obstacle1();
+                obstacle2();
+                obstacle3();
+                obstacle4();
+                obstacle5();
+                obstacle6();
+                obstacle7();
+                obstacle8();
+                obstacle9();
+                obstacle10();
+                if (!godMode) {
+                    collisions();
                 }
             }
             repaint();
@@ -463,14 +529,134 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     }
     
     public static void main(String [] args) {
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize(); // Defining the screen to get and use its dimensions
+        
+        // Game
+        JFrame f = new JFrame();
         Game game = new Game();
         
-        JFrame f = new JFrame();
-        f.setTitle("Game");
+        // Controls
+        JFrame controls = new JFrame(); // Window
+        JPanel controlsPanel = new JPanel(); // Panel that exists inside window
+        
+        // Labels (Although below buttons in the window, it has to be here to be modified on a button press))
+        JLabel pausedLabel = new JLabel();
+        JLabel godLabel = new JLabel();
+        JLabel flightLabel = new JLabel();
+        JLabel obstaclesLabel = new JLabel();
+        
+        // Buttons
+        // Pause button
+        JButton pauseButton = new JButton("START / STOP") {
+            {
+                setSize(500, 300);
+                addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        pauseGame();
+                        //pausedLabel.setText("Paused: " + gamePaused + ", ");
+                        f.setVisible(true);
+                    }
+                });
+            }
+        };
+        
+        // Reset button
+        JButton resetButton = new JButton("RESET") {
+            {
+                setSize(500, 300);
+                addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        resetGame();
+                        f.setVisible(true);
+                    }
+                });
+            }
+        };
+        
+        // God button
+        JButton godButton = new JButton("GOD") {
+            {
+                setSize(500, 300);
+                addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        toggleGod();
+                        //godLabel.setText("Godmode: " + godMode + ", ");
+                        f.setVisible(true);
+                    }
+                });
+            }
+        };
+        
+        // Flight button
+        JButton flightButton = new JButton("FLIGHT") {
+            {
+                setSize(500, 300);
+                addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        toggleFlight();
+                        //flightLabel.setText("Flightmode: " + flightMode + ", ");
+                        f.setVisible(true);
+                    }
+                });
+            }
+        };
+        
+        // Obstacles button
+        JButton obstaclesButton = new JButton("Obstacles") {
+            {
+                setSize(500, 300);
+                addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        toggleObstacles();
+                        // obstaclesLabel.setText("No obstacles: " + noObstacles + ", ");
+                        f.setVisible(true);
+                    }
+                });
+            }
+        };
+        
+        // Controls panel
+        // Adding buttons
+        controlsPanel.add(pauseButton);
+        controlsPanel.add(resetButton);
+        controlsPanel.add(godButton);
+        controlsPanel.add(flightButton);
+        controlsPanel.add(obstaclesButton);
+        // Adding labels
+        controlsPanel.add(pausedLabel);
+        controlsPanel.add(godLabel);
+        controlsPanel.add(flightLabel);
+        controlsPanel.add(obstaclesLabel);
+        
+        // Controls window
+        controls.setTitle("Control panel");
+        controls.add(controlsPanel); // Adding buttons
+        controls.setSize(500,600);
+        controls.setLocation(screen.width/6-controls.getSize().width/2, screen.height/2-controls.getSize().height/2);
+        controls.setVisible(true);
+        controls.setResizable(false);
+        controls.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        // Game window
+        f.setTitle("Avoid the blue obstacles!");
         f.add(game);
+        f.setSize(800, 600);
+        f.setLocation(screen.width/2-f.getSize().width/2, screen.height/2-f.getSize().height/2);
         f.setVisible(true);
         f.setResizable(false);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setSize(800, 600);
+        
+        // Updater for the labels when something is toggled. Not good, makes my computer fans run really hard. If you can, pls find a better method of updating these.
+        do {
+            pausedLabel.setText("Paused: " + gamePaused + ", ");
+            godLabel.setText("Godmode: " + godMode + ", ");
+            flightLabel.setText("Flightmode: " + flightMode + ", ");
+            obstaclesLabel.setText("No obstacles: " + noObstacles + ", ");
+        } while (true);
     }
 }
