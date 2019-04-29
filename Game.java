@@ -52,11 +52,12 @@ Update Log:
 - Resets obstacles' positions when obstacles are disabled. (Seb)
 - Added a restart function. (Seb)
 - Added GUI functions. (Seb)
+- Refined code as much as possible. (Seb)
 
-FOR KEVIN AND DANIEL:
-- Create a start menu
-- Create a game over menu with restart or main menu options
-- Ensure the code is clean and ready to present.
+The only thing that needs to be done is fixing the label updater at the very bottom. It uses
+a do {} while loop to constantly set the text of the labels to show the current value
+of something (ie. paused, flight enabled or disabled, etc.). This do while makes
+my computer fans run, meaning it is very ineffecient.
 
 */
 
@@ -71,6 +72,11 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     public static boolean godMode = false;
     public static boolean flightMode = false;
     public static boolean noObstacles = false;
+    // Labels to display variable states
+    public static JLabel pausedLabel = new JLabel("Paused: " + gamePaused + ", ");
+    public static JLabel godLabel = new JLabel("Godmode: " + godMode + ", ");
+    public static JLabel flightLabel = new JLabel("Flightmode: " + flightMode + ", ");
+    public static JLabel obstaclesLabel = new JLabel("No obstacles: " + noObstacles);
     
     /* Object properties */
     // Player
@@ -375,6 +381,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
     // Cheat methods
     public static void toggleGod() {
         godMode = !godMode;
+        godLabel.setText("Godmode: " + godMode + ", ");
         System.out.println("GODMODE: " + godMode);
     }
     
@@ -386,27 +393,21 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         } else {
             flightMode = false;
         }
+        flightLabel.setText("Flightmode: " + flightMode + ", ");
         System.out.println("FLIGHTMODE: " + flightMode);
     }
     
     public static void toggleObstacles() {
         noObstacles = !noObstacles;
-        if (noObstacles) {
-            System.out.println("OBSTACLES: disabled");
-            resetObstacles();
-        } else {
-            System.out.println("OBSTACLES: enabled");
-        }
+        System.out.println("No obstacles: " + noObstacles);
+        obstaclesLabel.setText("No obstacles: " + noObstacles + ", ");
     }
     
     public static void pauseGame() {
         if (!gameEnded) {
             gamePaused = !gamePaused;
-            if (gamePaused) {
-                System.out.println("Game stopped!");
-            } else {
-                System.out.println("Game started!");
-            }
+            pausedLabel.setText("Paused: " + gamePaused + ", ");
+            System.out.println("Paused: " + gamePaused);
         } else {
             resetGame();
         }
@@ -433,7 +434,7 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         resetPlayer();
         resetObstacles();
         gameEnded = false;
-        System.out.println("Game restarted!");
+        System.out.println("Game reset!");
     }
     
     public void stopGame() {
@@ -538,12 +539,6 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         // Controls
         JFrame controls = new JFrame(); // Window
         JPanel controlsPanel = new JPanel(); // Panel that exists inside window
-        
-        // Labels (Although below buttons in the window, it has to be here to be modified on a button press))
-        JLabel pausedLabel = new JLabel();
-        JLabel godLabel = new JLabel();
-        JLabel flightLabel = new JLabel();
-        JLabel obstaclesLabel = new JLabel();
         
         // Buttons
         // Pause button
@@ -650,13 +645,5 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         f.setVisible(true);
         f.setResizable(false);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        // Updater for the labels when something is toggled. Not good, makes my computer fans run really hard. If you can, pls find a better method of updating these.
-        do {
-            pausedLabel.setText("Paused: " + gamePaused + ", ");
-            godLabel.setText("Godmode: " + godMode + ", ");
-            flightLabel.setText("Flightmode: " + flightMode + ", ");
-            obstaclesLabel.setText("No obstacles: " + noObstacles + ", ");
-        } while (true);
     }
 }
