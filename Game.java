@@ -54,10 +54,9 @@ Update Log:
 - Added GUI functions. (Seb)
 - Refined code as much as possible. (Seb)
 
-The only thing that needs to be done is fixing the label updater at the very bottom. It uses
-a do {} while loop to constantly set the text of the labels to show the current value
-of something (ie. paused, flight enabled or disabled, etc.). This do while makes
-my computer fans run, meaning it is very ineffecient.
+4/29/19:
+- Fixed the label updater. Made them global to be updated on keypress as well as opposed to being constantly updated through a
+do {} while (true); loop which lagged computers.
 
 */
 
