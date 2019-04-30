@@ -1,43 +1,36 @@
-package game;
+package Game;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.Rectangle;
 import java.awt.event.*;
 import java.awt.geom.*;
 
-/*
 
+/*
 Developed by: Kevin Bui, Daniel Li, Sebastian Kamal
 Date of creation: 4/16/19
 Last edited on: 4/28/19
-
 Keybinds:
     Space - Pause
     R - Restart game
     G - Godmode
     F - Flightmode
     C - Toggle obstacles
-
 Update Log:
-
 4/16/19:
 - Created a moving ball. (Seb)
 - Created solid boundaries. 100% working! (Seb)
-
 4/23/19:
 - Individual colours for objects. (Seb)
 - Fixed border movement. (Seb)
-
 4/24/19:
 - Added player gravity. The ball will always fall back down! (Seb)
 - Added jumping! (Non parabolic)(Seb)
 - Improved general game mechanics. (Seb)
-
 4/25/19:
 - Added obstacles! They don't have collisions. (Seb)
 - Fixed the gravity and the jumping. (Seb)
 - Improved obstacle difficulty. (Seb)
-
 4/26/19:
 - Added collisions with player & obstacles! (Seb & Kevin)
 - Added God mode. (Seb)
@@ -45,7 +38,6 @@ Update Log:
 - Added Obstacle toggler. (Seb)
 - Fixed general movement. (Seb)
 - Added more obstacles (Doubled, it's still not even hard unless you're a noob :P).
-
 4/28/19:
 - Improved the code (less repition for game end instances, it's all in one inside the actionPerformed now, much better). (Seb)
 - Added a game pauser keybind. (Seb)
@@ -53,14 +45,23 @@ Update Log:
 - Added a restart function. (Seb)
 - Added GUI functions. (Seb)
 - Refined code as much as possible. (Seb)
-
 4/29/19:
 - Fixed the label updater. Made them global to be updated on keypress as well as opposed to being constantly updated through a
 do {} while (true); loop which lagged computers.
-
 */
 
 public class Game extends JPanel implements ActionListener, KeyListener {
+    
+    
+    public static enum STATE{
+        MENU,
+        GAME
+    }
+    
+    public static STATE state = STATE.MENU;
+    public static boolean a = false;
+    
+    
     // Creates a refresher (the actionlistener in the class ^^ is updating every 5ms)
     Timer t = new Timer(5, this);
     // Movement conditions
@@ -528,121 +529,133 @@ public class Game extends JPanel implements ActionListener, KeyListener {
         }
     }
     
-    public static void main(String [] args) {
-        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize(); // Defining the screen to get and use its dimensions
-        
-        // Game
-        JFrame f = new JFrame();
-        Game game = new Game();
-        
-        // Controls
-        JFrame controls = new JFrame(); // Window
-        JPanel controlsPanel = new JPanel(); // Panel that exists inside window
-        
-        // Buttons
-        // Pause button
-        JButton pauseButton = new JButton("START / STOP") {
-            {
-                setSize(500, 300);
-                addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        pauseGame();
-                        //pausedLabel.setText("Paused: " + gamePaused + ", ");
-                        f.setVisible(true);
-                    }
-                });
-            }
-        };
-        
-        // Reset button
-        JButton resetButton = new JButton("RESET") {
-            {
-                setSize(500, 300);
-                addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        resetGame();
-                        f.setVisible(true);
-                    }
-                });
-            }
-        };
-        
-        // God button
-        JButton godButton = new JButton("GOD") {
-            {
-                setSize(500, 300);
-                addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        toggleGod();
-                        //godLabel.setText("Godmode: " + godMode + ", ");
-                        f.setVisible(true);
-                    }
-                });
-            }
-        };
-        
-        // Flight button
-        JButton flightButton = new JButton("FLIGHT") {
-            {
-                setSize(500, 300);
-                addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        toggleFlight();
-                        //flightLabel.setText("Flightmode: " + flightMode + ", ");
-                        f.setVisible(true);
-                    }
-                });
-            }
-        };
-        
-        // Obstacles button
-        JButton obstaclesButton = new JButton("Obstacles") {
-            {
-                setSize(500, 300);
-                addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        toggleObstacles();
-                        // obstaclesLabel.setText("No obstacles: " + noObstacles + ", ");
-                        f.setVisible(true);
-                    }
-                });
-            }
-        };
-        
-        // Controls panel
-        // Adding buttons
-        controlsPanel.add(pauseButton);
-        controlsPanel.add(resetButton);
-        controlsPanel.add(godButton);
-        controlsPanel.add(flightButton);
-        controlsPanel.add(obstaclesButton);
-        // Adding labels
-        controlsPanel.add(pausedLabel);
-        controlsPanel.add(godLabel);
-        controlsPanel.add(flightLabel);
-        controlsPanel.add(obstaclesLabel);
-        
-        // Controls window
-        controls.setTitle("Control panel");
-        controls.add(controlsPanel); // Adding buttons
-        controls.setSize(500,600);
-        controls.setLocation(screen.width/6-controls.getSize().width/2, screen.height/2-controls.getSize().height/2);
-        controls.setVisible(true);
-        controls.setResizable(false);
-        controls.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        // Game window
-        f.setTitle("Avoid the blue obstacles!");
-        f.add(game);
-        f.setSize(800, 600);
-        f.setLocation(screen.width/2-f.getSize().width/2, screen.height/2-f.getSize().height/2);
-        f.setVisible(true);
-        f.setResizable(false);
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public static void startGame(){
+                Dimension screen = Toolkit.getDefaultToolkit().getScreenSize(); // Defining the screen to get and use its dimensions
+               JFrame f = new JFrame();
+               Game game = new Game();
+
+
+               Settings setting = new Settings();
+
+               // Controls
+               JFrame controls = new JFrame(); // Window
+               JPanel controlsPanel = new JPanel(); // Panel that exists inside window
+
+
+
+               // Buttons
+               // Pause button
+               JButton pauseButton = new JButton("START / STOP") {
+                   {
+                       setSize(500, 300);
+                       addActionListener(new ActionListener() {
+                           @Override
+                           public void actionPerformed(ActionEvent e) {
+                               pauseGame();
+                               //pausedLabel.setText("Paused: " + gamePaused + ", ");
+                               f.setVisible(true);
+                           }
+                       });
+                   }
+               };
+
+               // Reset button
+               JButton resetButton = new JButton("RESET") {
+                   {
+                       setSize(500, 300);
+                       addActionListener(new ActionListener() {
+                           @Override
+                           public void actionPerformed(ActionEvent e) {
+                               resetGame();
+                               f.setVisible(true);
+                           }
+                       });
+                   }
+               };
+
+               // God button
+               JButton godButton = new JButton("GOD") {
+                   {
+                       setSize(500, 300);
+                       addActionListener(new ActionListener() {
+                           @Override
+                           public void actionPerformed(ActionEvent e) {
+                               toggleGod();
+                               //godLabel.setText("Godmode: " + godMode + ", ");
+                               f.setVisible(true);
+                           }
+                       });
+                   }
+               };
+
+               // Flight button
+               JButton flightButton = new JButton("FLIGHT") {
+                   {
+                       setSize(500, 300);
+                       addActionListener(new ActionListener() {
+                           @Override
+                           public void actionPerformed(ActionEvent e) {
+                               toggleFlight();
+                               //flightLabel.setText("Flightmode: " + flightMode + ", ");
+                               f.setVisible(true);
+                           }
+                       });
+                   }
+               };
+
+               // Obstacles button
+               JButton obstaclesButton = new JButton("Obstacles") {
+                   {
+                       setSize(500, 300);
+                       addActionListener(new ActionListener() {
+                           @Override
+                           public void actionPerformed(ActionEvent e) {
+                               toggleObstacles();
+                               // obstaclesLabel.setText("No obstacles: " + noObstacles + ", ");
+                               f.setVisible(true);
+                           }
+                       });
+                   }
+               };
+
+               // Controls panel
+               // Adding buttons
+               controlsPanel.add(pauseButton);
+               controlsPanel.add(resetButton);
+               controlsPanel.add(godButton);
+               controlsPanel.add(flightButton);
+               controlsPanel.add(obstaclesButton);
+               // Adding labels
+               controlsPanel.add(pausedLabel);
+               controlsPanel.add(godLabel);
+               controlsPanel.add(flightLabel);
+               controlsPanel.add(obstaclesLabel);
+
+               // Controls window
+               controls.setTitle("Control panel");
+               controls.add(controlsPanel); // Adding buttons
+               controls.setSize(500,600);
+               controls.setLocation(screen.width/6-controls.getSize().width/2, screen.height/2-controls.getSize().height/2);
+               controls.setVisible(true);
+               controls.setResizable(false);
+               controls.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+               // Game window
+               f.setTitle("Avoid the blue obstacles!");
+               f.add(game);
+               f.setSize(800, 600);
+               f.setLocation(screen.width/2-f.getSize().width/2, screen.height/2-f.getSize().height/2);
+               f.setVisible(true);
+               f.setResizable(false);
+               f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
-}
+    
+    public static void main(String [] args) {
+        
+               StartScreen startScreen = new StartScreen();
+               startScreen.setVisible(true);
+    }
+            
+            
+         
+ }
